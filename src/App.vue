@@ -1,22 +1,37 @@
 <template>
   <v-app>
     <v-main>
-      <div class="background d-flex justify-center align-center flex-column">
-        <h1 class="clock">{{ this.hourMinuteTimestamp }}</h1>
+      <div class="background d-flex justify-start align-center flex-column">
         <div class="d-flex justify-center align-start">
           <v-btn
             v-for="item in quicklinks"
             :key="item.id"
             class="ma-10"
             outlined
-            large
+            medium
             fab
-            color="white"
+            color="cecece"
             @click="redirect(item.link)"
           >
             <v-icon>{{ item.icon }}</v-icon>
           </v-btn>
         </div>
+        <h1 class="clock unselectable mt-10">
+          {{ this.hourMinuteTimestamp }}
+        </h1>
+        <v-text-field
+          class="search-bar"
+          type="text"
+          v-model="searchValue"
+          solo
+          label="Search..."
+          :rounded="true"
+          :clearable="true"
+          background-color="#2b2b2b"
+          prepend-inner-icon="mdi-google"
+          :autofocus="true"
+          @keyup.enter="search()"
+        ></v-text-field>
       </div>
     </v-main>
   </v-app>
@@ -27,6 +42,7 @@ export default {
   name: "App",
   data: () => ({
     hourMinuteTimestamp: "",
+    searchValue: "",
     quicklinks: [
       {
         id: 1,
@@ -59,22 +75,31 @@ export default {
         icon: "mdi-github"
       },
       {
-        id: 6,
+        id: 7,
         link: "https://discord.com/",
         icon: "mdi-discord"
       }
     ]
   }),
   created() {
+    if (this.$cookies.isKey("userLinks")) {
+      console.log(this.$cookies.get("userLinks"));
+      this.quicklinks = this.$cookies.get("userLinks");
+    }
+    this.getCurrentTime();
     setInterval(this.getCurrentTime, 1000);
+  },
+  beforeDestroy() {
+    if (this.quicklinks != null) {
+      console.log(this.$cookies.get("userLinks"));
+      this.$cookies.set("userLinks", this.quicklinks);
+    }
   },
   methods: {
     getCurrentTime: function() {
       const today = new Date();
       let hours = today.getHours();
-      if (hours < 10) {
-        hours = "0" + hours.toString();
-      }
+      hours = (hours < 10 ? "O" : "") + hours.toString();
       let minutes = today.getMinutes();
       if (minutes < 10) {
         minutes = "0" + minutes.toString();
@@ -83,6 +108,14 @@ export default {
     },
     redirect: function(link) {
       window.location.href = link;
+    },
+    search: function() {
+      console.log(this.searchValue);
+      if (this.searchValue.length > 0) {
+        let search =
+          "https://www.google.ro/search?authuser=0&sxsrf=ALeKk00dRF1sQx40V4ouhuvVpt3SQDwzeQ%3A1601834766468&ei=Dg96X7iMHKGalwT5iK6ABQ&q=";
+        window.location.href = search + this.searchValue.replace(" ", "+");
+      }
     }
   }
 };
@@ -93,11 +126,27 @@ export default {
 .background
   width: 100vw
   height: 100vh
-  background-image: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9')
-  background-size: cover
-  background-repeat: no-repeat
+  background-color: #3b3b3b
+
 .clock
-  font-size: 200px
+  font-size: 15vw
   font-family: "Lucida Console", Monaco, monospace
   font-weight: normal
+
+.search-bar
+  width: 40vw
+
+.unselectable
+  -webkit-touch-callout: none
+  -webkit-user-select: none
+  -khtml-user-select: none
+  -moz-user-select: none
+  -ms-user-select: none
+  user-select: none
+
+@media only screen and (max-width: 800px)
+  .clock
+    font-size: 30vw
+  .search-bar
+    width: 80vw
 </style>

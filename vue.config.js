@@ -1,4 +1,4 @@
 module.exports = {
   transpileDependencies: ["vuetify"],
-  publicPath: '/home-screener/'
+  publicPath: process.env.NODE_ENV === "production" ? "/home-screener/" : "/"
 };
