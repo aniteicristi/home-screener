@@ -73,26 +73,26 @@ export default {
         id: 6,
         link: "https://github.com/sYntaxHub",
         icon: "mdi-github"
-      },
-      {
-        id: 7,
-        link: "https://discord.com/",
-        icon: "mdi-discord"
       }
     ]
   }),
   created() {
-    if (this.$cookies.isKey("userLinks")) {
+    if (
+      this.$cookies.isKey("userLinks") == true &&
+      this.$cookies.isKey("userLinks") != null
+    ) {
       console.log(this.$cookies.get("userLinks"));
-      this.quicklinks = this.$cookies.get("userLinks");
+      this.quicklinks = this.$cookies.get("userLinks").links;
     }
     this.getCurrentTime();
     setInterval(this.getCurrentTime, 1000);
   },
   beforeDestroy() {
-    if (this.quicklinks != null) {
+    if (this.quicklinks != null && this.quicklinks.length > 0) {
       console.log(this.$cookies.get("userLinks"));
-      this.$cookies.set("userLinks", this.quicklinks);
+      this.$cookies.set("userLinks", {
+        links: this.quicklinks
+      });
     }
   },
   methods: {
