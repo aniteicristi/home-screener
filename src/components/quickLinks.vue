@@ -132,7 +132,7 @@ export default {
       }
     },
     addLink: function() {
-      this.newLink = this.newLink == "" ? "mdi-link" : this.newLink;
+      if (this.newIcon == "") this.newIcon = "mdi-link-variant";
       let newLink = {
         id: this.quicklinks.length,
         title: this.newTitle,
