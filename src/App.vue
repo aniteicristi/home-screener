@@ -2,21 +2,9 @@
   <v-app>
     <v-main>
       <div class="background d-flex justify-start align-center flex-column">
-        <div class="d-flex justify-center align-start">
-          <v-btn
-            v-for="item in quicklinks"
-            :key="item.id"
-            class="ma-10"
-            outlined
-            medium
-            fab
-            color="cecece"
-            @click="redirect(item.link)"
-          >
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-btn>
-        </div>
-        <h1 class="clock unselectable mt-10">
+        <quickLinks class="quick-links"></quickLinks>
+
+        <h1 class="clock unselectable mt-16">
           {{ this.hourMinuteTimestamp }}
         </h1>
         <v-text-field
@@ -38,65 +26,23 @@
 </template>
 
 <script>
+import quickLinks from "./components/quickLinks";
+
 export default {
   name: "App",
+  components: {
+    quickLinks
+  },
   data: () => ({
     hourMinuteTimestamp: "",
-    searchValue: "",
-    quicklinks: [
-      {
-        id: 1,
-        link: "https://www.facebook.com/",
-        icon: "mdi-facebook"
-      },
-      {
-        id: 2,
-        link: "https://www.youtube.com/",
-        icon: "mdi-youtube"
-      },
-      {
-        id: 3,
-        link: "https://calendar.google.com/",
-        icon: "mdi-calendar"
-      },
-      {
-        id: 4,
-        link: "https://mail.google.com/",
-        icon: "mdi-gmail"
-      },
-      {
-        id: 5,
-        link: "https://www.office.com/",
-        icon: "mdi-microsoft-office"
-      },
-      {
-        id: 6,
-        link: "https://github.com/sYntaxHub",
-        icon: "mdi-github"
-      }
-    ]
+    searchValue: ""
   }),
   created() {
-    if (
-      this.$cookies.isKey("userLinks") == true &&
-      this.$cookies.isKey("userLinks") != null
-    ) {
-      console.log(this.$cookies.get("userLinks"));
-      this.quicklinks = this.$cookies.get("userLinks").links;
-    }
-    this.getCurrentTime();
-    setInterval(this.getCurrentTime, 1000);
-  },
-  beforeDestroy() {
-    if (this.quicklinks != null && this.quicklinks.length > 0) {
-      console.log(this.$cookies.get("userLinks"));
-      this.$cookies.set("userLinks", {
-        links: this.quicklinks
-      });
-    }
+    this.setCurrentTime();
+    setInterval(this.setCurrentTime, 1000);
   },
   methods: {
-    getCurrentTime: function() {
+    setCurrentTime: function() {
       const today = new Date();
       let hours = today.getHours();
       hours = (hours < 10 ? "O" : "") + hours.toString();
@@ -105,9 +51,6 @@ export default {
         minutes = "0" + minutes.toString();
       }
       this.hourMinuteTimestamp = hours + ":" + minutes;
-    },
-    redirect: function(link) {
-      window.location.href = link;
     },
     search: function() {
       console.log(this.searchValue);
@@ -127,11 +70,16 @@ export default {
   width: 100vw
   height: 100vh
   background-color: #3b3b3b
+  background-size: cover
+  background-image: url('./assets/background.jpg')
 
 .clock
   font-size: 15vw
   font-family: "Lucida Console", Monaco, monospace
   font-weight: normal
+
+.quick-links
+  width: 100vw
 
 .search-bar
   width: 40vw
