@@ -1,41 +1,43 @@
 <template>
-  <v-sheet color="#3b3b3b" elevation="6">
-    <v-slide-group class="px-2 py-1" show-arrows>
-      <v-slide-item v-for="item in quicklinks" :key="item.id">
-        <v-chip
-          :href="item.link"
-          :draggable="editing == true"
-          :close="editing == true"
-          @click:close="deleteLink(item.id)"
-          class="mx-1 my-1 body-2"
-          color="#cecece"
-          close-icon="mdi-close-outline"
-          outlined
-          link
-        >
-          <v-icon left small>{{ item.icon }}</v-icon>
-          {{ item.title }}
-        </v-chip>
-      </v-slide-item>
-
-      <v-slide-item>
-        <v-btn
-          class="mx-1 my-1"
-          outlined
-          x-small
-          fab
-          color="#6b6b6b"
-          :disabled="editing == true"
-          @click="editing = true"
-        >
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
-      </v-slide-item>
-    </v-slide-group>
-
+  <div>
+    <v-sheet color="#3b3b3b" class="quick-links">
+      <v-slide-group class="px-2 py-1" show-arrows="always" ref="chipGroup">
+        <v-slide-item v-for="item in quicklinks" :key="item.id">
+          <v-chip
+            :href="item.link"
+            :draggable="editing == true"
+            :close="editing == true"
+            @click:close="deleteLink(item.id)"
+            class="mx-1 my-1 body-2"
+            color="#cecece"
+            close-icon="mdi-close"
+            outlined
+            link
+          >
+            <v-icon left small>{{ item.icon }}</v-icon>
+            {{ item.title }}
+          </v-chip>
+        </v-slide-item>
+      </v-slide-group>
+    </v-sheet>
+    <div class="toolbar">
+      <v-btn
+        class="ma-2"
+        outlined
+        small
+        fab
+        color="#cecece"
+        :disabled="editing == true"
+        @click="toggleEditing()"
+      >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </div>
     <v-expand-transition>
-      <v-sheet v-if="editing == true" color="#3b3b3b">
-        <div class="d-flex flex-column justify-center align-start ma-5">
+      <v-sheet class="new-link-sheet" v-if="editing == true" color="#3b3b3b">
+        <div
+          class="d-flex flex-column justify-center align-start mt-12 mb-5 mx-5"
+        >
           <v-text-field
             class="form"
             v-model="newTitle"
@@ -72,7 +74,7 @@
         </div>
       </v-sheet>
     </v-expand-transition>
-  </v-sheet>
+  </div>
 </template>
 
 <script>
@@ -142,11 +144,15 @@ export default {
       this.quicklinks.push(newLink);
       this.resetForm();
     },
-    resetForm() {
+    resetForm: function() {
       this.newLink = "";
       this.newTitle = "";
       this.newIcon = "";
-      this.editing = false;
+      this.toggleEditing();
+    },
+    toggleEditing: function() {
+      this.editing = !this.editing;
+      this.$refs.chipGroup.scrollOffset = 0;
     }
   },
   computed: {
@@ -159,5 +165,20 @@ export default {
 
 <style lang="sass" scoped>
 .form
-  width: 30vw
+  width: 23vw
+.quick-links
+  width: 100vw
+.new-link-sheet
+  width: 27vw
+  position: absolute
+  z-index: 0
+.toolbar
+  position: absolute
+  z-index:2
+
+@media only screen and (max-width: 800px)
+  .new-link-sheet
+    width: 100vw
+  .form
+    width: 80vw
 </style>

@@ -2,11 +2,8 @@
   <v-app>
     <v-main>
       <div class="background d-flex justify-start align-center flex-column">
-        <quickLinks class="quick-links"></quickLinks>
-
-        <h1 class="clock unselectable mt-16">
-          {{ this.hourMinuteTimestamp }}
-        </h1>
+        <quickLinks></quickLinks>
+        <clock class="my-16"></clock>
         <v-text-field
           class="search-bar"
           type="text"
@@ -27,31 +24,18 @@
 
 <script>
 import quickLinks from "./components/quickLinks";
+import clock from "./components/clock";
 
 export default {
   name: "App",
   components: {
-    quickLinks
+    quickLinks,
+    clock
   },
   data: () => ({
-    hourMinuteTimestamp: "",
     searchValue: ""
   }),
-  created() {
-    this.setCurrentTime();
-    setInterval(this.setCurrentTime, 1000);
-  },
   methods: {
-    setCurrentTime: function() {
-      const today = new Date();
-      let hours = today.getHours();
-      hours = (hours < 10 ? "O" : "") + hours.toString();
-      let minutes = today.getMinutes();
-      if (minutes < 10) {
-        minutes = "0" + minutes.toString();
-      }
-      this.hourMinuteTimestamp = hours + ":" + minutes;
-    },
     search: function() {
       console.log(this.searchValue);
       if (this.searchValue.length > 0) {
@@ -73,28 +57,10 @@ export default {
   background-size: cover
   background-image: url('./assets/background.jpg')
 
-.clock
-  font-size: 15vw
-  font-family: "Lucida Console", Monaco, monospace
-  font-weight: normal
-
-.quick-links
-  width: 100vw
-
 .search-bar
   width: 40vw
 
-.unselectable
-  -webkit-touch-callout: none
-  -webkit-user-select: none
-  -khtml-user-select: none
-  -moz-user-select: none
-  -ms-user-select: none
-  user-select: none
-
 @media only screen and (max-width: 800px)
-  .clock
-    font-size: 30vw
   .search-bar
     width: 80vw
 </style>
