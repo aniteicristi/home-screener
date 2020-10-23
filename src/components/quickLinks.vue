@@ -143,12 +143,6 @@ export default {
     selecting: false,
     quicklinks: [],
     selectedLink: null,
-    defaultSelectedLink: {
-      id: -1,
-      title: "",
-      link: "",
-      icon: ""
-    },
     defaultLinks: [
       {
         id: 0,
@@ -184,7 +178,7 @@ export default {
     this.selectedLink = this.defaultSelectedLink;
   },
   beforeDestroy() {
-    localStorage.setItem("links", JSON.stringify(this.quicklinks));
+    this.localStoreLinks(this.quicklinks);
   },
   watch: {
     quicklinks(newList) {
@@ -199,7 +193,7 @@ export default {
       }
       if (id == this.selectedLink.id) {
         this.selecting = false;
-        this.selectedLink = this.defaultSelectedLink;
+        this.resetSelectedLink();
       }
     },
     addLink: function() {
@@ -255,25 +249,35 @@ export default {
       }
     },
     resetForm: function() {
-      this.selectedLink = this.defaultSelectedLink;
+      this.resetSelectedLink();
       this.editing = false;
       this.creating = false;
       this.selecting = false;
       this.$refs.chipGroup.scrollOffset = 0;
     },
     toggleEditing: function() {
+      this.resetSelectedLink();
+      console.log(this.selectedLink);
       this.editing = !this.editing;
       this.$refs.chipGroup.scrollOffset = 0;
       this.creating = false;
     },
     toggleCreating: function() {
-      this.selectedLink = this.defaultSelectedLink;
+      this.resetSelectedLink();
       this.creating = !this.creating;
       this.$refs.chipGroup.scrollOffset = 0;
       this.editing = false;
     },
     localStoreLinks: function(newList) {
       localStorage.setItem("links", JSON.stringify(newList));
+    },
+    resetSelectedLink: function() {
+      this.selectedLink = {
+        id: -1,
+        title: "",
+        link: "",
+        icon: ""
+      };
     }
   },
   computed: {
