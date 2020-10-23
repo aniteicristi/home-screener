@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-sheet color="#3b3b3b" class="quick-links">
+    <v-sheet color="accent" class="quick-links">
       <v-slide-group class="px-2 py-1" show-arrows="always" ref="chipGroup">
         <v-slide-item v-for="item in quicklinks" :key="item.id">
           <v-chip
@@ -26,7 +26,7 @@
         outlined
         small
         fab
-        color="#cecece"
+        color="#FFFFFF"
         :disabled="editing == true"
         @click="toggleEditing()"
       >
@@ -34,7 +34,7 @@
       </v-btn>
     </div>
     <v-expand-transition>
-      <v-sheet class="new-link-sheet" v-if="editing == true" color="#3b3b3b">
+      <v-sheet class="new-link-sheet" v-if="editing == true" color="secondary">
         <div
           class="d-flex flex-column justify-center align-start mt-12 mb-5 mx-5"
         >
